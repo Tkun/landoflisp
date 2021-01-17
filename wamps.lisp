@@ -19,6 +19,22 @@
   (apply #'append (loop repeat *edge-num*
                         collect (edge-pair (random-node) (random-node)))))
 
+(defun direct-edges (node edge-list)
+  (remove-if-not (lambda (x)
+                   (eql (car x) node))
+                 edge-list))
+
+(defun get-connected(node edge-list)
+   (let ((visited nil))
+     (labels ((traverse (node)
+                (unless (member node visited)
+                   (push node visited)
+                   (mapc (lambda (edge)
+                           (traverse (cdr edge)))
+                         (direct-edges node edge-list)))))
+     (traverse node))
+   visited))
+
 (defun know-city-nodes ()
    (mapcar (lambda (node)
              (if (member node *visited-nodes*)
@@ -34,3 +50,5 @@
                                        (cdr (assoc node
                                                    *congestion-city-nodes*))))
                              *visited-nodes*)))))
+
+
